@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光体AI · 生命进化智能体系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F4E4BC;
+            --gold-dark: #B8941F;
+            --purple-deep: #0a0618;
+            --purple-mid: #1a0f2e;
+            --purple-light: #2d1b4e;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Noto Serif SC', 'Microsoft YaHei', serif;
+            background: 
+                radial-gradient(ellipse at 20% 0%, rgba(157,78,221,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(212,175,55,0.1) 0%, transparent 50%),
+                linear-gradient(180deg, var(--purple-deep) 0%, var(--purple-mid) 50%, #0f0818 100%);
+            color: #f8f8f8;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.8;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* 头部 */
+        header {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 24px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(20px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+        
+        h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 50%, var(--gold-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 60px rgba(212,175,55,0.3);
+        }
+        
+        .subtitle {
+            color: rgba(248,248,248,0.7);
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: 300;
+        }
+        
+        /* 导航 */
+        .nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 14px 28px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 50px;
+            color: rgba(248,248,248,0.7);
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(212,175,55,0.1);
+            border-color: rgba(212,175,55,0.3);
+            color: var(--gold-light);
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(157,78,221,0.2));
+            border-color: var(--gold);
+            color: var(--gold-light);
+            box-shadow: 0 10px 40px rgba(212,175,55,0.15);
+        }
+        
+        /* 页面切换 */
+        .section { display: none; animation: fadeIn 0.5s ease; }
+        .section.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: var(--gold);
+            letter-spacing: 0.05em;
+        }
+        
+        /* 卡片 */
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+        }
+        
+        .card:hover {
+            border-color: rgba(212,175,55,0.25);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .card-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* 按钮 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 32px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: #0a0618;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(212,175,55,0.3);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--gold-light);
+            border: 1.5px solid var(--gold);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(212,175,55,0.1);
+        }
+        
+        /* 统计 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(157,78,221,0.05));
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: 16px;
+            transition: all 0.4s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212,175,55,0.3);
+            box-shadow: 0 15px 40px rgba(212,175,55,0.1);
+        }
+        
+        .stat-value {
+            font-size: 2.8em;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1.2;
+        }
+        
+        .stat-label {
+            color: rgba(248,248,248,0.7);
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+        
+        /* 输出区域 */
+        .output {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 16px;
+            padding: 25px;
+            min-height: 300px;
+            white-space: pre-wrap;
+            line-height: 2;
+            margin-top: 20px;
+            font-size: 1.05em;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        /* 加载动画 */
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: var(--gold);
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+        
+        /* 内容列表 */
+        .content-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .content-item {
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .content-item:hover {
+            background: rgba(212,175,55,0.05);
+            transform: translateX(5px);
+        }
+        
+        .content-item-title {
+            font-weight: 600;
+            color: var(--gold-light);
+            margin-bottom: 8px;
+        }
+        
+        .content-item-meta {
+            color: rgba(248,248,248,0.6);
+            font-size: 0.85em;
+        }
+        
+        /* 搜索框 */
+        .search-box {
+            width: 100%;
+            padding: 16px 24px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(212,175,55,0.1);
+        }
+        
+        /* 状态标签 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 0.95em;
+            margin-bottom: 25px;
+        }
+        
+        .status-badge.active {
+            background: rgba(46,204,113,0.1);
+            border: 1px solid rgba(46,204,113,0.3);
+            color: #2ecc71;
+        }
+        
+        .status-badge.inactive {
+            background: rgba(231,76,60,0.1);
+            border: 1px solid rgba(231,76,60,0.3);
+            color: #e74c3c;
+        }
+        
+        /* 计时器 */
+        .timer-display {
+            font-size: 2.5em;
+            font-weight: 700;
+            text-align: center;
+            color: var(--gold-light);
+            margin: 20px 0;
+            letter-spacing: 0.1em;
+        }
+        
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 50px 30px;
+            margin-top: 60px;
+            border-top: 1px solid rgba(212,175,55,0.2);
+        }
+        
+        .footer-quote {
+            font-size: 1.6em;
+            font-style: italic;
+            color: rgba(248,248,248,0.8);
+            margin-bottom: 20px;
+            letter-spacing: 0.05em;
+        }
+        
+        .footer-creator {
+            font-size: 1.1em;
+            color: var(--gold-light);
+            letter-spacing: 0.1em;
+        }
+        
+        /* 响应式 */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2em; }
+            .section-title { font-size: 1.6em; }
+            .nav-btn { padding: 12px 20px; font-size: 0.9em; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .timer-display { font-size: 1.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✦ 光体AI ✦</h1>
+            <p class="subtitle">生命进化智能体系统</p>
+            <div class="nav">
+                <button class="nav-btn active" onclick="showTab('dashboard')">📊 总览</button>
+                <button class="nav-btn" onclick="showTab('auto')">⚡ 自动生产</button>
+                <button class="nav-btn" onclick="showTab('manual')">✨ 手动生成</button>
+                <button class="nav-btn" onclick="showTab('library')">📚 内容库</button>
+            </div>
+        </header>
+
+        <!-- 总览 -->
+        <div id="dashboard" class="section active">
+            <h2 class="section-title">内容生产总览</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-essay">0</div>
+                    <div class="stat-label">核心论文</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-viewpoint">0</div>
+                    <div class="stat-label">观点碎片</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-quote">0</div>
+                    <div class="stat-label">神圣金句</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-video">0</div>
+                    <div class="stat-label">短视频</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-article">0</div>
+                    <div class="stat-label">长文章</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-label">总计</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📝 最新生成</div>
+                <div id="latest-list" class="content-list">
+                    <p style="text-align:center;color:rgba(248,248,248,0.5);padding:40px">暂无内容，请开启自动生产或手动生成</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 自动生产 -->
+        <div id="auto" class="section">
+            <h2 class="section-title">自动生产控制</h2>
+
+            <div id="status-badge" class="status-badge inactive">
+                <span>⏹️ 自动生产已停止</span>
+            </div>
+
+            <div class="card" style="text-align:center">
+                <div class="timer-display" id="countdown">--:--:--</div>
+                
+                <div style="margin:30px 0">
+                    <button class="btn" id="btn-start" onclick="startAuto()">▶️ 开启自动生产</button>
+                    <button class="btn btn-secondary" id="btn-stop" onclick="stopAuto()" style="display:none">⏹️ 停止</button>
+                    <button class="btn" onclick="generateBatchNow()">⚡ 立即生成</button>
+                </div>
+
+                <div style="margin-top:20px;padding:20px;background:rgba(255,255,255,0.05);border-radius:12px">
+                    <p style="color:rgba(248,248,248,0.7)">
+                        每4小时自动生成：<br>
+                        论文3篇 · 观点33个 · 金句99条 · 视频33条 · 文章33篇 · 朋友圈3条
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手动生成 -->
+        <div id="manual" class="section">
+            <h2 class="section-title">手动生成内容</h2>
+
+            <div class="card" style="text-align:center">
+                <button class="btn" onclick="generateContent('essay')" id="btn-essay">📄 核心论文</button>
+                <button class="btn" onclick="generateContent('viewpoint')" id="btn-viewpoint">💡 观点碎片</button>
+                <button class="btn" onclick="generateContent('quote')" id="btn-quote">✨ 神圣金句</button>
+                <button class="btn" onclick="generateContent('video')" id="btn-video">🎬 短视频</button>
+                <button class="btn" onclick="generateContent('article')" id="btn-article">📝 长文章</button>
+                <button class="btn" onclick="generateContent('moments')" id="btn-moments">💬 朋友圈</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">生成结果</div>
+                <div id="manual-output" class="output">点击上方按钮生成内容...</div>
+                
+                <div style="text-align:center;margin-top:20px">
+                    <button class="btn" onclick="copyOutput()">📋 复制</button>
+                    <button class="btn btn-secondary" onclick="downloadOutput()">💾 下载</button>
+                    <button class="btn btn-secondary" onclick="clearOutput()">🗑️ 清空</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 内容库 -->
+        <div id="library" class="section">
+            <h2 class="section-title">内容库管理</h2>
+
+            <div class="card">
+                <input type="text" class="search-box" id="search-input" placeholder="🔍 搜索内容..." oninput="searchContent()">
+                
+                <div style="text-align:center;margin-bottom:20px">
+                    <button class="btn" onclick="exportAll()">📄 导出全部</button>
+                    <button class="btn btn-secondary" onclick="clearAll()">🗑️ 清空</button>
+                </div>
+                
+                <div class="card-title">内容列表（<span id="content-count">0</span> 条）</div>
+                <div id="content-list" class="content-list">
+                    <p style="text-align:center;color:rgba(248,248,248,0.5);padding:40px">暂无内容</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-quote">"黑暗森林终会落幕，光体文明永恒存在"</div>
+        <div class="footer-creator">✦ 光体文明发起人：光体师 ✦</div>
+    </footer>
+
+    <script>
+        // API基础URL - 自动检测当前域名
+        const API_BASE_URL = window.location.origin;
+        
+        // 数据存储
+        let contentDB = JSON.parse(localStorage.getItem('lightbody_contentDB') || '[]');
+        let stats = JSON.parse(localStorage.getItem('lightbody_stats') || '{"essay":0,"viewpoint":0,"quote":0,"video":0,"article":0,"total":0}');
+        let autoInterval = null;
+        let countdownInterval = null;
+
+        // 切换标签
+        function showTab(tab) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'library') renderLibrary();
+            if (tab === 'dashboard') renderDashboard();
+        }
+
+        // 生成内容 - 调用后端API
+        async function generateContent(type) {
+            const output = document.getElementById('manual-output');
+            const btn = document.getElementById('btn-' + type);
+            
+            // 禁用按钮
+            if (btn) btn.disabled = true;
+            output.innerHTML = '<div class="loading">正在生成深度内容</div>';
+            
+            try {
+                const response = await fetch(API_BASE_URL + '/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type: type })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('服务器响应错误: ' + response.status);
+                }
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    output.textContent = data.content;
+                    
+                    // 保存到数据库
+                    const item = {
+                        id: Date.now().toString(),
+                        type: data.type,
+                        typeName: data.typeName,
+                        title: data.title,
+                        content: data.content,
+                        theme: data.theme,
+                        createdAt: data.createdAt
+                    };
+                    
+                    contentDB.unshift(item);
+                    stats[data.type] = (stats[data.type] || 0) + 1;
+                    stats.total++;
+                    
+                    localStorage.setItem('lightbody_contentDB', JSON.stringify(contentDB));
+                    localStorage.setItem('lightbody_stats', JSON.stringify(stats));
+                    
+                    updateStats();
+                    showNotification('✨ 生成完成！');
+                } else {
+                    output.innerHTML = '<div style="color:#e74c3c">生成失败: ' + (data.message || '未知错误') + '</div>';
+                }
+            } catch (error) {
+                output.innerHTML = '<div style="color:#e74c3c">请求失败: ' + error.message + '<br><br>请检查:<br>1. 网络连接是否正常<br>2. 后端服务是否运行</div>';
+                console.error('Error:', error);
+            }
+            
+            // 启用按钮
+            if (btn) btn.disabled = false;
+        }
+
+        // 显示通知
+        function showNotification(message) {
+            const notif = document.createElement('div');
+            notif.style.cssText = 'position:fixed;top:20px;right:20px;background:linear-gradient(135deg, #D4AF37, #9d4edd);color:#0a0618;padding:16px 28px;border-radius:12px;font-weight:600;z-index:9999;animation:slideIn 0.3s ease;';
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => {
+                notif.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
+        }
+
+        // 更新统计
+        function updateStats() {
+            document.getElementById('stat-essay').textContent = stats.essay || 0;
+            document.getElementById('stat-viewpoint').textContent = stats.viewpoint || 0;
+            document.getElementById('stat-quote').textContent = stats.quote || 0;
+            document.getElementById('stat-video').textContent = stats.video || 0;
+            document.getElementById('stat-article').textContent = stats.article || 0;
+            document.getElementById('stat-total').textContent = stats.total || 0;
+        }
+
+        // 渲染最新内容
+        function renderDashboard() {
+            updateStats();
+            const list = document.getElementById('latest-list');
+            if (contentDB.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:rgba(248,248,248,0.5);padding:40px">暂无内容，请开启自动生产或手动生成</p>';
+            } else {
+                list.innerHTML = contentDB.slice(0, 5).map(item => 
+                    '<div class="content-item" onclick="viewContent(' + item.id + ')">' +
+                    '<div class="content-item-title">[' + item.typeName + '] ' + item.title + '</div>' +
+                    '<div class="content-item-meta">' + new Date(item.createdAt).toLocaleString() + '</div>' +
+                    '</div>'
+                ).join('');
+            }
+        }
+
+        // 渲染内容库
+        function renderLibrary() {
+            document.getElementById('content-count').textContent = contentDB.length;
+            const list = document.getElementById('content-list');
+            if (contentDB.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:rgba(248,248,248,0.5);padding:40px">暂无内容</p>';
+            } else {
+                list.innerHTML = contentDB.map(item => 
+                    '<div class="content-item" onclick="viewContent(' + item.id + ')">' +
+                    '<div class="content-item-title">[' + item.typeName + '] ' + item.title + '</div>' +
+                    '<div style="font-size:0.9em;color:rgba(248,248,248,0.8);margin-top:5px">' + item.content.substring(0, 100) + '...</div>' +
+                    '<div class="content-item-meta">' + new Date(item.createdAt).toLocaleString() + '</div>' +
+                    '</div>'
+                ).join('');
+            }
+        }
+
+        // 查看内容详情
+        function viewContent(id) {
+            const item = contentDB.find(c => c.id === id.toString());
+            if (item) {
+                document.getElementById('manual-output').textContent = item.content;
+                showTab('manual');
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.nav-btn')[2].classList.add('active');
+            }
+        }
+
+        // 搜索内容
+        function searchContent() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            const filtered = contentDB.filter(item => 
+                item.title.toLowerCase().includes(term) ||
+                item.content.toLowerCase().includes(term)
+            );
+            
+            document.getElementById('content-count').textContent = filtered.length;
+            const list = document.getElementById('content-list');
+            
+            if (filtered.length === 0) {
+                list.innerHTML = '<p style="text-align:center;color:rgba(248,248,248,0.5);padding:40px">没有找到匹配的内容</p>';
+            } else {
+                list.innerHTML = filtered.map(item => 
+                    '<div class="content-item" onclick="viewContent(' + item.id + ')">' +
+                    '<div class="content-item-title">[' + item.typeName + '] ' + item.title + '</div>' +
+                    '<div style="font-size:0.9em;color:rgba(248,248,248,0.8);margin-top:5px">' + item.content.substring(0, 100) + '...</div>' +
+                    '<div class="content-item-meta">' + new Date(item.createdAt).toLocaleString() + '</div>' +
+                    '</div>'
+                ).join('');
+            }
+        }
+
+        // 导出全部
+        function exportAll() {
+            if (contentDB.length === 0) {
+                alert('内容库为空');
+                return;
+            }
+            
+            let md = '# 光体AI生成内容全集\n\n';
+            md += '**导出时间**: ' + new Date().toLocaleString() + '\n\n';
+            md += '**总计**: ' + contentDB.length + ' 条内容\n\n';
+            md += '---\n\n';
+            
+            contentDB.forEach((item, i) => {
+                md += '## ' + (i + 1) + '. [' + item.typeName + '] ' + item.title + '\n\n';
+                md += item.content + '\n\n';
+                md += '*生成时间: ' + new Date(item.createdAt).toLocaleString() + '*\n\n';
+                md += '---\n\n';
+            });
+            
+            downloadFile(md, '光体AI内容全集.md');
+        }
+
+        // 下载文件
+        function downloadFile(content, filename) {
+            const blob = new Blob([content], {type: 'text/markdown'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 复制输出
+        function copyOutput() {
+            const text = document.getElementById('manual-output').textContent;
+            if (text === '点击上方按钮生成内容...') {
+                alert('请先生成内容');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('✅ 已复制到剪贴板');
+            });
+        }
+
+        // 下载输出
+        function downloadOutput() {
+            const text = document.getElementById('manual-output').textContent;
+            if (text === '点击上方按钮生成内容...') {
+                alert('请先生成内容');
+                return;
+            }
+            downloadFile(text, '光体AI生成内容.md');
+        }
+
+        // 清空输出
+        function clearOutput() {
+            document.getElementById('manual-output').textContent = '点击上方按钮生成内容...';
+        }
+
+        // 清空全部
+        function clearAll() {
+            if (!confirm('确定要清空所有内容吗？此操作不可恢复。')) return;
+            
+            contentDB = [];
+            stats = {essay: 0, viewpoint: 0, quote: 0, video: 0, article: 0, total: 0};
+            localStorage.setItem('lightbody_contentDB', JSON.stringify(contentDB));
+            localStorage.setItem('lightbody_stats', JSON.stringify(stats));
+            
+            renderLibrary();
+            updateStats();
+            showNotification('🗑️ 内容库已清空');
+        }
+
+        // 自动生产功能
+        function startAuto() {
+            document.getElementById('status-badge').className = 'status-badge active';
+            document.getElementById('status-badge').innerHTML = '<span>▶️ 自动生产中</span>';
+            document.getElementById('btn-start').style.display = 'none';
+            document.getElementById('btn-stop').style.display = 'inline-block';
+            
+            generateBatchNow();
+            autoInterval = setInterval(generateBatchNow, 14400000); // 4小时
+            startCountdown();
+            
+            showNotification('▶️ 自动生产已开启');
+        }
+
+        function stopAuto() {
+            document.getElementById('status-badge').className = 'status-badge inactive';
+            document.getElementById('status-badge').innerHTML = '<span>⏹️ 自动生产已停止</span>';
+            document.getElementById('btn-start').style.display = 'inline-block';
+            document.getElementById('btn-stop').style.display = 'none';
+            
+            clearInterval(autoInterval);
+            clearInterval(countdownInterval);
+            document.getElementById('countdown').textContent = '--:--:--';
+            
+            showNotification('⏹️ 自动生产已停止');
+        }
+
+        function generateBatchNow() {
+            const types = ['essay', 'viewpoint', 'quote'];
+            types.forEach((type, index) => {
+                setTimeout(() => {
+                    generateContent(type);
+                }, index * 2000);
+            });
+        }
+
+        function startCountdown() {
+            let seconds = 14400;
+            countdownInterval = setInterval(() => {
+                seconds--;
+                if (seconds <= 0) seconds = 14400;
+                
+                const h = Math.floor(seconds / 3600);
+                const m = Math.floor((seconds % 3600) / 60);
+                const s = seconds % 60;
+                
+                document.getElementById('countdown').textContent = 
+                    (h < 10 ? '0' : '') + h + ':' + 
+                    (m < 10 ? '0' : '') + m + ':' + 
+                    (s < 10 ? '0' : '') + s;
+            }, 1000);
+        }
+
+        // 初始化
+        window.onload = function() {
+            updateStats();
+            renderDashboard();
+            
+            // 检查后端是否可用
+            fetch(API_BASE_URL + '/api/health')
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ 后端服务正常');
+                    }
+                })
+                .catch(error => {
+                    console.log('⚠️ 后端服务可能不可用:', error);
+                });
+        };
+    </script>
+</body>
+</html>
